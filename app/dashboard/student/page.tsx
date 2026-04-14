@@ -286,12 +286,12 @@ export default async function StudentDashboardPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 py-8">
       <header className="mb-8 border-b border-stone-200 pb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
           IgnitED · Student
         </p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-stone-900">Learning hub</h1>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-stone-900">Learning hub</h1>
         <p className="mt-2 text-sm leading-relaxed text-stone-600">
           Your syllabus-aligned workspace: progress from the database, then guided paths through
           each enrolled course with one-click quizzes.

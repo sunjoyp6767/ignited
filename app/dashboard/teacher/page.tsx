@@ -41,12 +41,12 @@ export default async function TeacherDashboardPage() {
   const loadError = attemptsRes.error?.message ?? null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="w-full px-8 py-8">
       <header className="border-b border-stone-300 pb-6">
         <p className="text-[11px] font-medium uppercase tracking-widest text-stone-500">
           Faculty corner · Instruction
         </p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-stone-900">
+        <h1 className="mt-1 text-3xl font-bold tracking-tight text-stone-900">
           Teacher dashboard
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-stone-600">

@@ -26,7 +26,7 @@ export default async function StudentDashboardLayout({ children }: { children: R
   return (
     <div className="flex min-h-screen w-full">
       <StudentSidebar studentName={studentName} />
-      <main className="flex-1 min-w-0 px-8 py-8">{children}</main>
+      <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

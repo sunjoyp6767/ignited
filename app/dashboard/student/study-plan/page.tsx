@@ -402,9 +402,9 @@ export default async function StudentStudyPlanPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 py-8">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Study plan</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Study plan</h1>
         <p className="mt-2 text-sm text-gray-600">
           Generated from your quiz performance. Weakest topics scheduled first.
         </p>

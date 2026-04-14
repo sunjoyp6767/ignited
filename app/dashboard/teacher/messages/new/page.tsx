@@ -27,12 +27,12 @@ export default async function TeacherNewMessagePage() {
     })) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 px-8 py-8">
       <div>
         <Link href="/dashboard/teacher/messages" className="text-sm text-gray-600 hover:text-gray-900">
           ← Back to inbox
         </Link>
-        <h1 className="mt-4 text-2xl font-semibold text-gray-900">New conversation</h1>
+        <h1 className="mt-4 text-3xl font-bold text-gray-900">New conversation</h1>
         <p className="mt-1 text-sm text-gray-600">Choose any student to start or continue a chat.</p>
       </div>
 

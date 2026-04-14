@@ -94,9 +94,9 @@ export default async function StudentPerformancePage() {
     .slice(-10);
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 py-8">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Performance</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Performance</h1>
         <p className="mt-2 text-sm text-gray-600">
           Topic mastery and recent attempt trend (server-side aggregates).
         </p>

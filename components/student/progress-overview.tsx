@@ -16,8 +16,8 @@ function Tile({
   valueClassName?: string;
 }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 text-center">
-      <p className="mb-1 text-xs uppercase tracking-widest text-gray-400">{label}</p>
+    <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-4 text-center">
+      <p className="mb-1 text-xs font-medium uppercase tracking-widest text-gray-400">{label}</p>
       <p
         className={`truncate text-2xl font-bold ${valueClassName ?? "text-gray-900"}`}
         title={value}
@@ -42,7 +42,7 @@ export function ProgressOverview({
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
             Learning hub
           </p>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight text-stone-900">
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-stone-900">
             Progress overview
           </h2>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">
@@ -52,29 +52,19 @@ export function ProgressOverview({
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 md:flex md:flex-row md:flex-wrap">
-        <div className="min-w-0 md:flex-1">
-          <Tile label="Avg score" value={averageScore === null ? "—" : `${averageScore}%`} />
-        </div>
-        <div className="min-w-0 md:flex-1">
-          <Tile label="Quizzes done" value={String(quizzesCompleted)} />
-        </div>
-        <div className="min-w-0 md:flex-1">
-          <Tile label="Best topic" value={bestTopic ?? "—"} />
-        </div>
-        <div className="min-w-0 md:flex-1">
-          <Tile
-            label="Needs work"
-            value={needsWorkTopic ?? "—"}
-            valueClassName={needsWorkTopic ? "text-amber-700" : undefined}
-          />
-        </div>
-        <div className="col-span-2 min-w-0 md:col-span-1 md:flex-1">
-          <Tile
-            label="Exam readiness"
-            value={examReadinessPercent === null ? "—" : `${examReadinessPercent}%`}
-          />
-        </div>
+      <div className="mt-4 grid w-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        <Tile label="Avg score" value={averageScore === null ? "—" : `${averageScore}%`} />
+        <Tile label="Quizzes done" value={String(quizzesCompleted)} />
+        <Tile label="Best topic" value={bestTopic ?? "—"} />
+        <Tile
+          label="Needs work"
+          value={needsWorkTopic ?? "—"}
+          valueClassName={needsWorkTopic ? "text-amber-700" : undefined}
+        />
+        <Tile
+          label="Exam readiness"
+          value={examReadinessPercent === null ? "—" : `${examReadinessPercent}%`}
+        />
       </div>
     </section>
   );

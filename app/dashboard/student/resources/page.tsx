@@ -41,9 +41,9 @@ export default async function StudentResourcesPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 py-8">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">My resources</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">My resources</h1>
         <p className="mt-2 text-sm text-gray-600">
           Materials from faculty, organised by subject (enrollment not required in this prototype).
         </p>

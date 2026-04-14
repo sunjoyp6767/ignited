@@ -42,9 +42,9 @@ export default async function StudentMessagesPage({ searchParams }: PageProps) {
     })) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 px-8 py-8">
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Messages</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
         <p className="mt-1 text-sm text-gray-600">
           Open a conversation with any teacher. You can share meeting links and images.
         </p>

@@ -55,36 +55,36 @@ export function SyllabusPathGrid({ cards, heading }: SyllabusPathGridProps) {
         </div>
       </div>
 
-      <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <ul className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {cards.map((card) => {
           const href = `/dashboard/student/quiz/${encodeURIComponent(card.topicNode)}`;
           const badge = routingBadge(card.stat);
 
           return (
-            <li key={card.topicNode}>
-              <article className="group relative flex h-full flex-col rounded-2xl border border-stone-200/90 bg-white p-5 shadow-md shadow-stone-200/40 ring-1 ring-stone-100 transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-lg hover:shadow-stone-200/60">
+            <li key={card.topicNode} className="w-full">
+              <article className="group relative flex h-full w-full flex-col gap-3 rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-stone-900 text-white shadow-inner shadow-black/20">
                     <BookOpen className="size-5" strokeWidth={1.75} aria-hidden />
                   </div>
                   {badge ? <div className="shrink-0">{badge}</div> : null}
                 </div>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-stone-400">
+                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                   {card.code}
                 </p>
-                <h3 className="mt-0.5 text-lg font-semibold text-stone-900">{card.title}</h3>
-                <p className="mt-1 font-mono text-[11px] text-stone-500">{card.topicNode}</p>
+                <h3 className="text-base font-semibold text-stone-900">{card.title}</h3>
+                <p className="font-mono text-[11px] text-stone-500">{card.topicNode}</p>
 
                 {card.stat && card.stat.attemptCount > 0 ? (
-                  <p className="mt-3 text-xs tabular-nums text-stone-600">
+                  <p className="text-xs tabular-nums text-stone-600">
                     {card.stat.attemptCount} attempt{card.stat.attemptCount === 1 ? "" : "s"} · avg{" "}
                     <span className="font-semibold text-stone-800">{card.stat.averageScore}%</span>
                   </p>
                 ) : (
-                  <p className="mt-3 text-xs text-stone-500">No scored attempts yet for this node.</p>
+                  <p className="text-xs text-stone-500">No scored attempts yet for this node.</p>
                 )}
 
-                <div className="mt-5 flex flex-1 flex-col justify-end">
+                <div className="mt-auto flex flex-1 flex-col justify-end pt-2">
                   <Link
                     href={href}
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-stone-900/20 transition hover:bg-stone-800 hover:shadow-lg"

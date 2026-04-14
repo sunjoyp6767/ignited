@@ -19,9 +19,9 @@ export default async function TeacherQuestionsPage() {
     .limit(80);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="w-full px-8 py-8">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Question authoring</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Question authoring</h1>
         <p className="mt-2 text-sm text-gray-600">
           Add validated, pre-generated MCQs aligned to syllabus topics.
         </p>

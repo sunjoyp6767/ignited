@@ -23,8 +23,8 @@ export default async function StudentAccountPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
-      <h1 className="text-2xl font-semibold text-gray-900">My account</h1>
+    <div className="w-full px-8 py-8">
+      <h1 className="text-3xl font-bold text-gray-900">My account</h1>
       <p className="mt-2 text-sm text-gray-600">Basic profile information from your IgnitED record.</p>
 
       <dl className="mt-8 space-y-4 rounded-lg border border-gray-200 bg-white p-6">

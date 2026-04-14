@@ -65,12 +65,12 @@ export default async function StudentConversationPage({ params }: PageProps) {
       : null) ?? "Teacher";
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 px-8 py-8">
       <div>
         <Link href="/dashboard/student/messages" className="text-sm text-gray-600 hover:text-gray-900">
           ← All teachers
         </Link>
-        <h1 className="mt-4 text-2xl font-semibold text-gray-900">{teacherName}</h1>
+        <h1 className="mt-4 text-3xl font-bold text-gray-900">{teacherName}</h1>
         <p className="text-sm text-gray-600">Teacher</p>
       </div>
 

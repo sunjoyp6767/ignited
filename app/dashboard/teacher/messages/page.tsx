@@ -39,10 +39,10 @@ export default async function TeacherMessagesPage() {
     }) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 px-8 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Messages</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
           <p className="mt-1 text-sm text-gray-600">Chat with any student in the system.</p>
         </div>
         <Link

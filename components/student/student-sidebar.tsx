@@ -30,26 +30,26 @@ export function StudentSidebar({ studentName }: StudentSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden h-full w-56 shrink-0 flex-col border-r border-gray-200 bg-white py-6 pl-4 pr-3 md:flex">
-      <div className="mb-6 border-b border-gray-100 pb-4">
-        <p className="truncate text-sm font-semibold text-gray-900">{studentName}</p>
+    <aside className="sticky top-0 hidden min-h-screen w-56 shrink-0 flex-col border-r border-gray-200 bg-white px-4 py-6 md:flex">
+      <div className="mb-2 border-b border-gray-100 pb-4">
+        <p className="truncate text-base font-semibold text-gray-900">{studentName}</p>
         <span className="mt-2 inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">
           Student
         </span>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1" aria-label="Student dashboard">
+      <nav className="flex flex-1 flex-col space-y-0.5" aria-label="Student dashboard">
         {NAV.map((item) => {
           const active = linkActive(item.href, pathname);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-r-md px-3 py-2 text-sm text-gray-800 ${
+              className={
                 active
-                  ? "border-l-2 border-gray-900 font-semibold text-gray-900"
-                  : "border-l-2 border-transparent font-normal hover:bg-gray-50"
-              }`}
+                  ? "flex w-full items-center rounded-lg border-l-2 border-gray-900 bg-gray-100 px-3 py-2 text-left text-sm font-semibold text-gray-900 transition-colors"
+                  : "flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+              }
             >
               {item.label}
             </Link>

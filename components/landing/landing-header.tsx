@@ -18,7 +18,7 @@ const navItems: { href: string; label: string }[] = [
 ];
 
 const linkClass =
-  "whitespace-nowrap text-sm font-medium text-[#2c2c2a] transition hover:text-teal-800";
+  "whitespace-nowrap px-2 py-1 text-sm font-medium text-[#2c2c2a] transition hover:text-teal-800";
 
 export async function LandingHeader() {
   const supabase = await createClient();
@@ -39,28 +39,30 @@ export async function LandingHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-400/50 bg-[#ccc9b5] shadow-sm">
-      <div className="mx-auto grid h-auto min-h-16 max-w-7xl grid-cols-[1fr_auto] items-center gap-3 px-4 py-2 sm:px-6 md:grid-cols-[auto_1fr_auto] md:gap-4 md:py-0">
-        <Link
-          href="/"
-          className="flex min-w-0 items-center gap-2 text-[#2c2c2a] sm:gap-3"
-          aria-label="IgnitED Faculty Corner home"
-        >
-          <Image
-            src="/assets/logo_IgnitED.png"
-            alt="IgnitED"
-            width={160}
-            height={40}
-            priority
-            className="h-9 w-auto shrink-0 sm:h-10"
-          />
-          <span className="truncate text-sm font-semibold tracking-tight sm:text-base lg:text-lg">
-            IgnitED Faculty Corner
-          </span>
-        </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-stone-400/50 bg-[#ccc9b5] shadow-sm">
+      <div className="mx-auto flex h-14 w-full max-w-screen-2xl items-center justify-between px-6">
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/"
+            className="flex min-w-0 items-center gap-2 text-[#2c2c2a] sm:gap-3"
+            aria-label="IgnitED Faculty Corner home"
+          >
+            <Image
+              src="/assets/logo_IgnitED.png"
+              alt="IgnitED"
+              width={160}
+              height={40}
+              priority
+              className="h-9 w-auto shrink-0 sm:h-10"
+            />
+            <span className="truncate text-sm font-semibold tracking-tight sm:text-base lg:text-lg">
+              IgnitED Faculty Corner
+            </span>
+          </Link>
+        </div>
 
         <nav
-          className="col-span-2 hidden flex-wrap items-center justify-center gap-x-3 gap-y-1 md:col-span-1 md:flex lg:gap-x-5"
+          className="hidden min-w-0 flex-1 flex-nowrap items-center justify-center gap-0 overflow-x-auto md:flex"
           aria-label="Primary"
         >
           {navItems.map((item) => (
@@ -70,44 +72,46 @@ export async function LandingHeader() {
           ))}
         </nav>
 
-        <HeaderAuthCluster
-          userId={user?.id ?? null}
-          initials={initials}
-          displayName={displayName}
-          className="hidden shrink-0 md:flex"
-          layout="row"
-        />
+        <div className="flex shrink-0 items-center gap-2">
+          <HeaderAuthCluster
+            userId={user?.id ?? null}
+            initials={initials}
+            displayName={displayName}
+            className="hidden md:flex"
+            layout="row"
+          />
 
-        <details className="relative justify-self-end md:hidden">
-          <summary
-            className="flex cursor-pointer list-none items-center justify-center rounded-md border border-stone-600/40 bg-[#d6d3c4] p-2 text-[#2c2c2a] [&::-webkit-details-marker]:hidden"
-            aria-label="Open menu"
-          >
-            <Menu className="size-6" strokeWidth={2} aria-hidden />
-          </summary>
-          <div className="absolute right-0 z-50 mt-2 w-56 rounded-lg border border-stone-300 bg-[#f5f2e8] py-2 shadow-lg">
-            <nav className="flex flex-col gap-1 px-2" aria-label="Mobile primary">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-[#2c2c2a] hover:bg-teal-50"
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <hr className="my-2 border-stone-300" />
-              <div className="px-2 pb-1">
-                <HeaderAuthCluster
-                  userId={user?.id ?? null}
-                  initials={initials}
-                  displayName={displayName}
-                  layout="stack"
-                />
-              </div>
-            </nav>
-          </div>
-        </details>
+          <details className="relative md:hidden">
+            <summary
+              className="flex cursor-pointer list-none items-center justify-center rounded-md border border-stone-600/40 bg-[#d6d3c4] p-2 text-[#2c2c2a] [&::-webkit-details-marker]:hidden"
+              aria-label="Open menu"
+            >
+              <Menu className="size-6" strokeWidth={2} aria-hidden />
+            </summary>
+            <div className="absolute right-0 z-50 mt-2 w-56 rounded-lg border border-stone-300 bg-[#f5f2e8] py-2 shadow-lg">
+              <nav className="flex flex-col gap-1 px-2" aria-label="Mobile primary">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-md px-3 py-2 text-sm font-medium text-[#2c2c2a] hover:bg-teal-50"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <hr className="my-2 border-stone-300" />
+                <div className="px-2 pb-1">
+                  <HeaderAuthCluster
+                    userId={user?.id ?? null}
+                    initials={initials}
+                    displayName={displayName}
+                    layout="stack"
+                  />
+                </div>
+              </nav>
+            </div>
+          </details>
+        </div>
       </div>
     </header>
   );

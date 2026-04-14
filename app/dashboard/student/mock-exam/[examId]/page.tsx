@@ -41,7 +41,7 @@ export default async function StudentMockExamAttemptPage({ params }: PageProps) 
     }));
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="w-full px-8 py-8">
       <MockExamTaker examId={exam.id} title={exam.title} questions={questions} />
     </div>
   );

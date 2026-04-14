@@ -24,9 +24,9 @@ export default async function TeacherResourcesPage() {
     .order("uploaded_at", { ascending: false });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="w-full px-8 py-8">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Resource publisher</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Resource publisher</h1>
         <p className="mt-2 text-sm text-gray-600">
           Upload Google Drive PDF/video links by topic and title. Students see them under My resources.
         </p>
