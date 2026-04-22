@@ -13,13 +13,29 @@ export type StudentLite = { id: string; name: string };
 
 export type PaymentLite = { student_id: string; paid_on: string };
 
-export type QuizAttemptLite = { student_id: string; completed_at: string };
+export type QuizAttemptLite = {
+  student_id: string;
+  completed_at: string;
+  score_percent?: number | null;
+};
+
+export type RiskSeverity = "high" | "medium" | "low";
+
+export type RiskReasonTag =
+  | "no_recent_payment"
+  | "no_recent_quiz"
+  | "low_score_pattern"
+  | "long_payment_gap"
+  | "long_quiz_gap";
 
 export type DropoutRiskRow = {
   studentId: string;
   name: string;
   lastPaymentDate: string | null;
   lastQuizAt: string | null;
+  score: number;
+  severity: RiskSeverity;
+  reasonTags: RiskReasonTag[];
   /** Human-readable reasons (deterministic copy) */
   reasons: string[];
 };
@@ -55,6 +71,33 @@ function maxQuizAtByStudent(attempts: QuizAttemptLite[]): Map<string, string> {
   return map;
 }
 
+function lastThreeScoresByStudent(attempts: QuizAttemptLite[]): Map<string, number[]> {
+  const grouped = new Map<string, { at: string; score: number }[]>();
+
+  for (const a of attempts) {
+    if (a.score_percent === null || a.score_percent === undefined) continue;
+    const arr = grouped.get(a.student_id) ?? [];
+    arr.push({ at: a.completed_at, score: a.score_percent });
+    grouped.set(a.student_id, arr);
+  }
+
+  const out = new Map<string, number[]>();
+  for (const [studentId, values] of grouped) {
+    values.sort((left, right) => new Date(right.at).getTime() - new Date(left.at).getTime());
+    out.set(
+      studentId,
+      values.slice(0, 3).map((v) => v.score)
+    );
+  }
+  return out;
+}
+
+function toSeverity(score: number): RiskSeverity {
+  if (score >= 70) return "high";
+  if (score >= 45) return "medium";
+  return "low";
+}
+
 /**
  * Returns students matching both risk criteria. Pure function for unit-style clarity.
  */
@@ -71,6 +114,7 @@ export function computeHighDropoutRiskRows(
 
   const lastPay = maxPaidOnByStudent(payments);
   const lastQuiz = maxQuizAtByStudent(quizAttempts);
+  const recentScores = lastThreeScoresByStudent(quizAttempts);
 
   const out: DropoutRiskRow[] = [];
 
@@ -83,33 +127,68 @@ export function computeHighDropoutRiskRows(
     const hasRecentQuiz =
       quizAt !== null && new Date(quizAt) >= quizCutoff;
 
-    if (hasRecentPayment || hasRecentQuiz) continue;
-
+    const reasonTags: RiskReasonTag[] = [];
     const reasons: string[] = [];
-    if (paid === null) {
-      reasons.push(`No payment on record in the last ${PAYMENT_WINDOW_DAYS} days (no ledger entries).`);
+    let score = 0;
+
+    if (!hasRecentPayment) {
+      reasonTags.push("no_recent_payment");
+      score += 35;
+      if (paid === null) {
+        reasons.push(`No payment on record in the last ${PAYMENT_WINDOW_DAYS} days (no ledger entries).`);
+      } else {
+        reasonTags.push("long_payment_gap");
+        reasons.push(
+          `Last payment dated ${paid} is before the ${PAYMENT_WINDOW_DAYS}-day window (cutoff ${paymentCutoffStr}).`
+        );
+      }
     } else {
+      reasons.push("Payment recency is within expected window.");
+    }
+
+    if (!hasRecentQuiz) {
+      reasonTags.push("no_recent_quiz");
+      score += 25;
+      if (quizAt === null) {
+        reasons.push(`No quiz completion logged in the last ${QUIZ_RECENT_DAYS} days (no attempts on file).`);
+      } else {
+        reasonTags.push("long_quiz_gap");
+        reasons.push(
+          `Last quiz completion ${quizAt} is older than ${QUIZ_RECENT_DAYS} days.`
+        );
+      }
+    } else {
+      reasons.push("Quiz activity is recent.");
+    }
+
+    const scores = recentScores.get(s.id) ?? [];
+    const lowScoreHits = scores.filter((value) => value < 50).length;
+    if (lowScoreHits >= 2) {
+      reasonTags.push("low_score_pattern");
+      score += 20;
       reasons.push(
-        `Last payment dated ${paid} is before the ${PAYMENT_WINDOW_DAYS}-day window (cutoff ${paymentCutoffStr}).`
+        `Low score pattern detected: ${lowScoreHits} of last ${scores.length} quiz attempts were below 50%.`
       );
     }
 
-    if (quizAt === null) {
-      reasons.push(`No quiz completion logged in the last ${QUIZ_RECENT_DAYS} days (no attempts on file).`);
-    } else {
-      reasons.push(
-        `Last quiz completion ${quizAt} is older than ${QUIZ_RECENT_DAYS} days.`
-      );
+    if (!hasRecentPayment && !hasRecentQuiz) {
+      score += 20;
+      reasons.push("Combined inactivity in finance and academics increases dropout risk.");
     }
+
+    if (score < 45) continue;
 
     out.push({
       studentId: s.id,
       name: s.name,
       lastPaymentDate: paid,
       lastQuizAt: quizAt,
+      score,
+      severity: toSeverity(score),
+      reasonTags,
       reasons,
     });
   }
 
-  return out;
+  return out.sort((left, right) => right.score - left.score);
 }

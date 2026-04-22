@@ -30,6 +30,7 @@ export async function recordManualPayment(input: {
   studentId: string;
   amount: number;
   paymentMethod: "cash" | "online";
+  paidOn?: string;
 }): Promise<PaymentActionResult> {
   const supabase = await createClient();
   const gate = await assertAccountant(supabase);
@@ -55,7 +56,10 @@ export async function recordManualPayment(input: {
     return { ok: false, message: "Target must be an existing student profile." };
   }
 
-  const paidOn = new Date().toISOString().slice(0, 10);
+  const paidOn = input.paidOn ?? new Date().toISOString().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(paidOn)) {
+    return { ok: false, message: "Invalid payment date format." };
+  }
 
   const { error } = await supabase.from("payments").insert({
     student_id: input.studentId,

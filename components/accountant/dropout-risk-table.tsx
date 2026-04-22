@@ -9,6 +9,14 @@ type DropoutRiskTableProps = {
 };
 
 export function DropoutRiskTable({ rows }: DropoutRiskTableProps) {
+  const sortedRows = [...rows].sort((left, right) => right.score - left.score);
+
+  const severityClass = (severity: DropoutRiskRow["severity"]) => {
+    if (severity === "high") return "border-red-300 bg-red-50 text-red-800";
+    if (severity === "medium") return "border-amber-300 bg-amber-50 text-amber-900";
+    return "border-sky-300 bg-sky-50 text-sky-800";
+  };
+
   return (
     <section className="rounded-lg border border-stone-200 bg-white shadow-sm">
       <div className="border-b border-stone-200 px-4 py-3 sm:px-5">
@@ -29,6 +37,7 @@ export function DropoutRiskTable({ rows }: DropoutRiskTableProps) {
             <tr>
               <th className="px-4 py-3 sm:px-5">Risk</th>
               <th className="px-4 py-3 sm:px-5">Student</th>
+              <th className="px-4 py-3 sm:px-5">Score</th>
               <th className="px-4 py-3 sm:px-5">Last payment</th>
               <th className="px-4 py-3 sm:px-5">Last quiz</th>
               <th className="px-4 py-3 sm:px-5">Signals</th>
@@ -38,21 +47,26 @@ export function DropoutRiskTable({ rows }: DropoutRiskTableProps) {
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="px-4 py-8 text-center text-sm text-stone-500 sm:px-5"
                 >
-                  No students match the high drop-out rule set.
+                  No students currently match the medium/high risk thresholds.
                 </td>
               </tr>
             ) : (
-              rows.map((r) => (
+              sortedRows.map((r) => (
                 <tr key={r.studentId} className="hover:bg-stone-50/80">
                   <td className="whitespace-nowrap px-4 py-3 sm:px-5">
-                    <span className="inline-flex items-center rounded-full border border-red-300 bg-red-50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-red-800">
-                      High drop-out risk
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${severityClass(
+                        r.severity
+                      )}`}
+                    >
+                      {r.severity} risk
                     </span>
                   </td>
                   <td className="px-4 py-3 font-medium sm:px-5">{r.name}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-stone-700 sm:px-5">{r.score}</td>
                   <td className="px-4 py-3 font-mono text-xs text-stone-600 sm:px-5">
                     {r.lastPaymentDate ?? "—"}
                   </td>

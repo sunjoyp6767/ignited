@@ -12,6 +12,7 @@ type ManualPaymentFormProps = {
 export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
   const [studentId, setStudentId] = useState(students[0]?.id ?? "");
   const [amount, setAmount] = useState("");
+  const [paidOn, setPaidOn] = useState(new Date().toISOString().slice(0, 10));
   const [method, setMethod] = useState<"cash" | "online">("cash");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -24,8 +25,18 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
     setLoading(true);
 
     const parsed = Number.parseFloat(amount);
+    if (!studentId) {
+      setError("Select a student before posting.");
+      setLoading(false);
+      return;
+    }
     if (!Number.isFinite(parsed) || parsed <= 0) {
       setError("Enter a valid amount.");
+      setLoading(false);
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(paidOn)) {
+      setError("Enter a valid paid date.");
       setLoading(false);
       return;
     }
@@ -34,6 +45,7 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
       studentId,
       amount: Math.round(parsed * 100) / 100,
       paymentMethod: method,
+      paidOn,
     });
 
     if (!result.ok) {
@@ -109,7 +121,7 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
             </label>
             <div className="relative mt-1">
               <span className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-sm text-stone-500">
-                $
+                ৳
               </span>
               <input
                 id="pay-amount"
@@ -145,9 +157,28 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
               <option value="online">Online (manual record)</option>
             </select>
           </div>
+          <div>
+            <label
+              htmlFor="pay-date"
+              className="block text-xs font-medium uppercase tracking-wide text-stone-600"
+            >
+              Paid on
+            </label>
+            <input
+              id="pay-date"
+              type="date"
+              required
+              value={paidOn}
+              onChange={(e) => setPaidOn(e.target.value)}
+              className="mt-1 block w-full rounded border border-stone-300 bg-white px-2 py-2 text-sm text-stone-900 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
+            />
+          </div>
         </div>
 
-        <div className="flex justify-end border-t border-stone-100 pt-3">
+        <div className="flex items-center justify-between border-t border-stone-100 pt-3">
+          <p className="text-xs text-stone-500">
+            Tip: use back-dated posting for delayed manual entries.
+          </p>
           <button
             type="submit"
             disabled={loading || students.length === 0}
