@@ -121,7 +121,7 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
             </label>
             <div className="relative mt-1">
               <span className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-sm text-stone-500">
-                ৳
+                TK
               </span>
               <input
                 id="pay-amount"
@@ -132,7 +132,7 @@ export function ManualPaymentForm({ students }: ManualPaymentFormProps) {
                 required
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="block w-full rounded border border-stone-300 py-2 pl-6 pr-2 text-sm tabular-nums text-stone-900 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
+                className="block w-full rounded border border-stone-300 py-2 pl-10 pr-2 text-sm tabular-nums text-stone-900 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
                 placeholder="0.00"
               />
             </div>

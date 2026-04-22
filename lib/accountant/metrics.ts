@@ -19,12 +19,10 @@ function addUtcMonths(d: Date, months: number): Date {
 }
 
 export function formatCurrency(value: number) {
-  return new Intl.NumberFormat("bn-BD", {
-    style: "currency",
-    currency: "BDT",
+  return `TK ${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(value);
+  }).format(value)}`;
 }
 
 export function buildEarningsTrend(

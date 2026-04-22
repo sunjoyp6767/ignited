@@ -16,6 +16,8 @@ const loginClass =
   "rounded-md border-2 border-teal-800 px-4 py-2 text-sm font-semibold text-teal-900 transition hover:bg-teal-50 text-center";
 const registerClass =
   "rounded-md bg-[#2c2c2a] px-4 py-2 text-sm font-semibold text-[#f5f2e8] shadow-md transition hover:bg-teal-950 text-center";
+const dashboardClass =
+  "rounded-md border border-teal-800 px-3 py-1.5 text-xs font-semibold text-teal-900 transition hover:bg-teal-50 text-center";
 
 export function HeaderAuthCluster({
   userId,
@@ -44,6 +46,9 @@ export function HeaderAuthCluster({
 
   return (
     <div className={`${flex} ${className}`}>
+      <Link href="/dashboard" className={dashboardClass}>
+        Dashboard
+      </Link>
       <div
         className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gray-800 text-sm font-medium text-white"
         aria-label={label}

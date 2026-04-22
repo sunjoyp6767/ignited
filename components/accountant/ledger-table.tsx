@@ -102,7 +102,9 @@ export function LedgerTable({ rows, students }: LedgerTableProps) {
                       {row.payment_method}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs sm:px-5">{formatCurrency(Number(row.amount ?? 0))}</td>
+                  <td className="px-4 py-3 font-mono text-sm sm:px-5">
+                    {formatCurrency(Number(row.amount ?? 0))}
+                  </td>
                 </tr>
               ))
             )}

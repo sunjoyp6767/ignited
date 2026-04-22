@@ -37,9 +37,15 @@ export function EarningsTrend({ points }: EarningsTrendProps) {
               points.map((point) => (
                 <tr key={point.monthKey} className="hover:bg-stone-50/70">
                   <td className="px-4 py-3 font-medium sm:px-5">{point.monthKey}</td>
-                  <td className="px-4 py-3 font-mono text-xs sm:px-5">{formatCurrency(point.online)}</td>
-                  <td className="px-4 py-3 font-mono text-xs sm:px-5">{formatCurrency(point.cash)}</td>
-                  <td className="px-4 py-3 font-mono text-xs sm:px-5">{formatCurrency(point.total)}</td>
+                  <td className="px-4 py-3 font-mono text-sm sm:px-5">
+                    {formatCurrency(point.online)}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-sm sm:px-5">
+                    {formatCurrency(point.cash)}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-sm sm:px-5">
+                    {formatCurrency(point.total)}
+                  </td>
                 </tr>
               ))
             )}
