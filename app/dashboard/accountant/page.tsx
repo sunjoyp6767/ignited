@@ -1,4 +1,5 @@
 import { ActionAlerts } from "@/components/accountant/action-alerts";
+import { ContactMessagesTable } from "@/components/accountant/contact-messages-table";
 import { DropoutRiskTable } from "@/components/accountant/dropout-risk-table";
 import { EarningsTrend } from "@/components/accountant/earnings-trend";
 import { LedgerTable } from "@/components/accountant/ledger-table";
@@ -17,6 +18,7 @@ import {
   type QuizAttemptLite,
   type StudentLite,
 } from "@/lib/accountant/dropout-risk";
+import { createClient } from "@/utils/supabase/server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,6 +31,12 @@ export default async function AccountantDashboardPage() {
 
   const now = new Date();
   const { students, ledger, quizzes, loadError } = await getAccountantDashboardData();
+  const supabase = await createClient();
+  const messagesRes = await supabase
+    .from("contact_messages")
+    .select("id, name, email, message, source_page, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(60);
   const studentLite: StudentLite[] = students.map((s) => ({ id: s.id, name: s.name }));
   const paymentLite: PaymentLite[] = ledger.map((entry) => ({
     student_id: entry.student_id,
@@ -96,6 +104,10 @@ export default async function AccountantDashboardPage() {
 
       <div className="mt-8">
         <LedgerTable rows={ledger} students={students} />
+      </div>
+
+      <div className="mt-8">
+        <ContactMessagesTable rows={messagesRes.data ?? []} />
       </div>
     </div>
   );

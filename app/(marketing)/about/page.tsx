@@ -23,6 +23,12 @@ export default function AboutPage() {
         the same node structure teachers already use to plan courses.
       </p>
 
+      <p className="mt-3 text-sm leading-relaxed text-stone-600">
+        We support both <span className="font-medium text-stone-800">offline classroom</span> and{" "}
+        <span className="font-medium text-stone-800">online learning</span> modes so families can
+        choose what fits their schedule, commute, and comfort level.
+      </p>
+
       <h2 className="mt-10 text-sm font-semibold uppercase tracking-wide text-stone-500">
         Who it is for
       </h2>
@@ -38,9 +44,9 @@ export default function AboutPage() {
           the platform.
         </li>
         <li>
-          <span className="font-medium text-stone-800">Accountants</span> record
-          offline and online fee movements, issue receipts, and track risk signals
-          alongside engagement data.
+          <span className="font-medium text-stone-800">Parents</span> get a more
+          transparent preparation journey through structured practice, measurable
+          progress, and clear intervention signals before high-stakes exams.
         </li>
       </ul>
 
@@ -52,6 +58,12 @@ export default function AboutPage() {
         recommendations are expressed as explicit rules and queries over your own
         tables—not opaque, live-generated tutoring text. That keeps latency low and
         outcomes explainable in an exam-focused environment.
+      </p>
+
+      <p className="mt-3 text-sm leading-relaxed text-stone-600">
+        Our goal is simple: help students build confidence topic by topic, while
+        giving parents confidence that preparation is consistent, accountable, and
+        aligned with Cambridge and Edexcel expectations.
       </p>
 
       <div className="mt-12 flex flex-col gap-3 sm:flex-row">

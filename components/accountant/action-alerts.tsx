@@ -18,7 +18,7 @@ export function ActionAlerts({ alerts }: ActionAlertsProps) {
           AI analysis alerts
         </h2>
         <p className="mt-0.5 text-xs text-stone-500">
-          Deterministic signals from payment and quiz behavior (rule-based, no external API).
+          Deterministic signals from payment and quiz behavior.
         </p>
       </div>
       <div className="space-y-3 px-4 py-4 sm:px-5 sm:py-5">

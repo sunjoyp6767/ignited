@@ -30,9 +30,15 @@ Rule: Always verify the user's role via Supabase before rendering protected rout
 
 # Core Development Directives (STRICTLY ENFORCED)
 
-## 1. The "Novelty" & Logic Rule (No Live Generative AI)
+## 1. The "Novelty" & Logic Rule (Zero-Cost AI Policy)
 
-Do NOT use external AI APIs (like OpenAI, Anthropic, etc.) at runtime. The application's "AI" value must come from custom algorithms, Rule-Based Expert Systems, and predictive analytics. Write explicit mapping, weighting, and calculation logic directly in Next.js/TypeScript.
+Simple AI features are allowed on Student and Teacher workflows, including free-tier external APIs, but they must remain zero-cost in operation.
+
+Mandatory guardrails:
+- Only use free-tier providers/tools with no paid billing dependency.
+- Add quota/error fallback to deterministic rule-based logic so the app still works when the API is unavailable or rate-limited.
+- Never block core LMS workflows on external AI responses.
+- Prefer explicit mapping, weighting, retrieval, and ranking logic in Next.js/TypeScript for predictable behavior.
 
 ## 2. Pre-Generated Data Strategy
 
@@ -52,6 +58,9 @@ Assume the following core tables exist in Supabase. Query them accordingly:
 
 - Intelligent Tutoring Routing: When a student finishes a quiz, write logic that calculates their score and queries the `Questions` table for the next logical syllabus node based on their performance (e.g., < 50% routes to Foundation difficulty, > 80% routes to Advanced).
 - High Drop-Out Risk Flagging: In the Accountant dashboard, build an algorithm that flags a student by cross-referencing their payment status in the `Payments` table with their recent login/quiz activity.
+- Student AI Recommendation: Provide topic recommendations based on weak-topic and recent score patterns (zero-cost AI or deterministic fallback).
+- Teacher AI Insights: Provide class-level trend insights and weak-topic clustering for intervention planning (zero-cost AI or deterministic fallback).
+- Teacher AI Question Suggestions: Suggest next question sets from the existing `Questions` bank using retrieval/ranking logic, optionally enhanced by zero-cost AI.
 
 ## 5. UI/UX Standards
 

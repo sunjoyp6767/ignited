@@ -1,6 +1,8 @@
 import { ClassAnalyticsOverview } from "@/components/teacher/class-analytics-overview";
+import { TeacherAiInsights } from "@/components/teacher/teacher-ai-insights";
 import { requireDashboardRole } from "@/lib/dashboard/require-role";
 import type { QuizAttemptScoreRow } from "@/lib/teacher/class-analytics";
+import { buildTeacherAiInsights } from "@/lib/teacher/ai-insights";
 import { createClient } from "@/utils/supabase/server";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -39,6 +41,7 @@ export default async function TeacherDashboardPage() {
   );
 
   const loadError = attemptsRes.error?.message ?? null;
+  const aiInsights = buildTeacherAiInsights(attemptRows);
 
   return (
     <div className="w-full px-8 py-8">
@@ -58,6 +61,7 @@ export default async function TeacherDashboardPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-12">
         <div className="space-y-8 lg:col-span-8">
           <ClassAnalyticsOverview attemptRows={attemptRows} loadError={loadError} />
+          <TeacherAiInsights insights={aiInsights} />
         </div>
         <div className="space-y-3 lg:col-span-4">
           <QuickLink href="/dashboard/teacher/resources" title="Resources" blurb="Publish Drive PDF/video materials." />

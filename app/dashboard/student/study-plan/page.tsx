@@ -17,6 +17,10 @@ type PlanItem = {
   subjectName: string;
   status: StudyPlanStatus;
   scheduledDate: Date;
+  originalScheduledDate: Date;
+  carriedForward: boolean;
+  missedCount: number;
+  isMissed: boolean;
   avgScore: number | null;
 };
 
@@ -127,10 +131,42 @@ function nextWeekday(date: Date): Date {
   return d;
 }
 
+function addBusinessDays(date: Date, delta: number): Date {
+  const d = new Date(date);
+  d.setHours(12, 0, 0, 0);
+  const step = delta >= 0 ? 1 : -1;
+  let remaining = Math.abs(delta);
+  while (remaining > 0) {
+    d.setDate(d.getDate() + step);
+    if (d.getDay() !== 0 && d.getDay() !== 6) remaining -= 1;
+  }
+  return d;
+}
+
+function businessDaysBetween(start: Date, end: Date): number {
+  const s = new Date(start);
+  const e = new Date(end);
+  s.setHours(12, 0, 0, 0);
+  e.setHours(12, 0, 0, 0);
+  if (s > e) return 0;
+  let count = 0;
+  const d = new Date(s);
+  while (d < e) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0 && d.getDay() !== 6) count += 1;
+  }
+  return count;
+}
+
+type AttemptMetric = {
+  avgScore: number | null;
+  lastAttemptAt: Date | null;
+};
+
 function generateStudyPlan(
   enrolledCourses: EnrolledCourse[],
   allNodes: SyllabusNode[],
-  attemptAverages: Record<string, number>
+  attemptMetrics: Record<string, AttemptMetric>
 ): PlanItem[] {
   if (enrolledCourses.length === 0) return [];
 
@@ -148,7 +184,8 @@ function generateStudyPlan(
 
     return courseNodes
       .map((node) => {
-        const avg = attemptAverages[node.topicNode] ?? null;
+        const metrics = attemptMetrics[node.topicNode];
+        const avg = metrics?.avgScore ?? null;
         let status: StudyPlanStatus = "not_started";
         if (avg !== null) {
           if (avg < 50) status = "needs_work";
@@ -162,6 +199,10 @@ function generateStudyPlan(
           subjectName: course.courseName,
           status,
           scheduledDate: new Date(),
+          originalScheduledDate: new Date(),
+          carriedForward: false,
+          missedCount: 0,
+          isMissed: false,
           avgScore: avg,
         };
       })
@@ -176,16 +217,50 @@ function generateStudyPlan(
     }
   }
 
-  let currentDate = nextWeekday(new Date());
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const backfill = Math.max(0, interleaved.length - 1);
+  let currentDate = addBusinessDays(today, -backfill);
   interleaved.forEach((item, idx) => {
     if (idx === 0) {
       item.scheduledDate = new Date(currentDate);
+      item.originalScheduledDate = new Date(currentDate);
     } else {
       currentDate = nextWeekday(currentDate);
       item.scheduledDate = new Date(currentDate);
+      item.originalScheduledDate = new Date(currentDate);
     }
   });
 
+  const overdueQueue: PlanItem[] = [];
+  for (const item of interleaved) {
+    const metrics = attemptMetrics[item.topicNode];
+    const lastAttempt = metrics?.lastAttemptAt ?? null;
+    const hasAttemptAfterScheduled =
+      lastAttempt !== null &&
+      lastAttempt.getTime() >= new Date(item.originalScheduledDate).setHours(23, 59, 59, 999);
+
+    const overdue =
+      item.status !== "mastered" &&
+      item.originalScheduledDate < today &&
+      !hasAttemptAfterScheduled;
+
+    if (!overdue) continue;
+    item.isMissed = true;
+    item.missedCount = Math.max(1, Math.ceil(businessDaysBetween(item.originalScheduledDate, today) / 2));
+    overdueQueue.push(item);
+  }
+
+  overdueQueue.sort((a, b) => b.missedCount - a.missedCount || priority[a.status] - priority[b.status]);
+
+  let carryDate = nextWeekday(today);
+  for (const item of overdueQueue) {
+    item.scheduledDate = new Date(carryDate);
+    item.carriedForward = true;
+    carryDate = nextWeekday(carryDate);
+  }
+
+  interleaved.sort((a, b) => a.scheduledDate.getTime() - b.scheduledDate.getTime());
   return interleaved;
 }
 
@@ -312,7 +387,7 @@ export default async function StudentStudyPlanPage() {
 
   let enrolledCourses: EnrolledCourse[] = [];
   let allNodes: SyllabusNode[] = [];
-  const attemptAverages: Record<string, number> = {};
+  const attemptMetrics: Record<string, AttemptMetric> = {};
 
   if (user) {
     enrolledCourses = await resolveEnrolledCourses(supabase, user.id);
@@ -350,14 +425,14 @@ export default async function StudentStudyPlanPage() {
 
     const attemptsWithScore = await supabase
       .from("quiz_attempts")
-      .select("topic_node, score")
+      .select("topic_node, score, completed_at")
       .eq("student_id", user.id);
 
     const attemptsFallback =
       attemptsWithScore.error !== null
         ? await supabase
             .from("quiz_attempts")
-            .select("topic_node, score_percent")
+            .select("topic_node, score_percent, completed_at")
             .eq("student_id", user.id)
         : null;
 
@@ -366,30 +441,45 @@ export default async function StudentStudyPlanPage() {
         ? (attemptsWithScore.data ?? []).map((a) => ({
             topic_node: a.topic_node as string | null,
             score: a.score as number | null,
+            completed_at: a.completed_at as string | null,
           }))
         : (attemptsFallback?.data ?? []).map((a) => ({
             topic_node: a.topic_node as string | null,
             score: a.score_percent as number | null,
+            completed_at: a.completed_at as string | null,
           }));
 
-    const attemptMap: Record<string, number[]> = {};
+    const attemptMap: Record<string, { scores: number[]; lastAttemptAt: Date | null }> = {};
     for (const attempt of rows) {
       if (!attempt.topic_node) continue;
       if (!attemptMap[attempt.topic_node]) {
-        attemptMap[attempt.topic_node] = [];
+        attemptMap[attempt.topic_node] = { scores: [], lastAttemptAt: null };
       }
       if (attempt.score !== null && attempt.score !== undefined) {
-        attemptMap[attempt.topic_node]!.push(Number(attempt.score));
+        attemptMap[attempt.topic_node]!.scores.push(Number(attempt.score));
+      }
+      if (attempt.completed_at) {
+        const d = new Date(attempt.completed_at);
+        if (!Number.isNaN(d.getTime())) {
+          const existing = attemptMap[attempt.topic_node]!.lastAttemptAt;
+          if (!existing || d > existing) {
+            attemptMap[attempt.topic_node]!.lastAttemptAt = d;
+          }
+        }
       }
     }
 
-    for (const [topic, scores] of Object.entries(attemptMap)) {
-      if (scores.length === 0) continue;
-      attemptAverages[topic] = scores.reduce((a, b) => a + b, 0) / scores.length;
+    for (const [topic, data] of Object.entries(attemptMap)) {
+      const avgScore =
+        data.scores.length === 0 ? null : data.scores.reduce((a, b) => a + b, 0) / data.scores.length;
+      attemptMetrics[topic] = {
+        avgScore,
+        lastAttemptAt: data.lastAttemptAt,
+      };
     }
   }
 
-  const plan = generateStudyPlan(enrolledCourses, allNodes, attemptAverages);
+  const plan = generateStudyPlan(enrolledCourses, allNodes, attemptMetrics);
   const topicsRemaining = plan.filter(
     (p) => p.status === "needs_work" || p.status === "not_started"
   ).length;
@@ -462,7 +552,18 @@ export default async function StudentStudyPlanPage() {
                     >
                       {statusLabel(item.status)}
                     </span>
+                    {item.isMissed ? (
+                      <span className="rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-800">
+                        Missed
+                      </span>
+                    ) : null}
                   </div>
+                  {item.carriedForward ? (
+                    <p className="mt-1 text-xs text-red-600">
+                      Missed {item.missedCount} time{item.missedCount > 1 ? "s" : ""}. Auto-rescheduled from{" "}
+                      {formatTimelineDate(item.originalScheduledDate)}.
+                    </p>
+                  ) : null}
                   {item.avgScore !== null ? (
                     <p className="mt-1 text-xs text-gray-500">Avg score: {item.avgScore}%</p>
                   ) : (

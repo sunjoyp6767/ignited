@@ -1,5 +1,7 @@
+import { AiRecommendationsPanel } from "@/components/student/ai-recommendations-panel";
 import { ProgressOverview } from "@/components/student/progress-overview";
 import { SyllabusPathGrid } from "@/components/student/syllabus-path-grid";
+import { buildStudentAiRecommendations } from "@/lib/student/ai-recommendations";
 import {
   bestTopicByAverage,
   examReadinessPercent,
@@ -218,6 +220,7 @@ export default async function StudentDashboardPage() {
   const best = bestTopicByAverage(attempts);
   const worst = needsWorkTopicByAverage(attempts);
   const readiness = examReadinessPercent(attempts, syllabusCode);
+  const aiRecommendations = buildStudentAiRecommendations(attempts, 3);
 
   const courseSections: {
     key: string;
@@ -293,8 +296,8 @@ export default async function StudentDashboardPage() {
         </p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-stone-900">Learning hub</h1>
         <p className="mt-2 text-sm leading-relaxed text-stone-600">
-          Your syllabus-aligned workspace: progress from the database, then guided paths through
-          each enrolled course with one-click quizzes.
+          Your syllabus-aligned workspace with guided paths through each enrolled course and
+          one-click quizzes.
         </p>
       </header>
 
@@ -305,6 +308,8 @@ export default async function StudentDashboardPage() {
         needsWorkTopic={worst?.topicNode ?? null}
         examReadinessPercent={readiness}
       />
+
+      <AiRecommendationsPanel recommendations={aiRecommendations} />
 
       {courseSections.length === 0 ? (
         <p className="mt-10 rounded-xl border border-stone-200 bg-white px-4 py-5 text-sm text-stone-600">
