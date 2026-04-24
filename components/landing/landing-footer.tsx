@@ -101,19 +101,34 @@ export function LandingFooter() {
           <p className="text-stone-500">© 2026 IgnitED Faculty Corner</p>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
             <span className="text-stone-400">Follow Us</span>
-            <div
-              className="flex gap-2"
-              aria-label="Social media icon placeholders (links not yet configured)"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-xs font-semibold text-stone-400">
+            <div className="flex gap-2" aria-label="Social media links">
+              <a
+                href="https://www.facebook.com/people/Ignited-Faculty-Corner/61560528137329/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit IgnitED on Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-xs font-semibold text-stone-300 transition hover:border-stone-400 hover:text-white"
+              >
                 f
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-xs font-semibold text-stone-400">
-                in
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-xs font-semibold text-stone-400">
+              </a>
+              <a
+                href="https://www.instagram.com/ignitedhub/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit IgnitED on Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-[11px] font-semibold text-stone-300 transition hover:border-stone-400 hover:text-white"
+              >
+                ig
+              </a>
+              <a
+                href="https://www.linkedin.com/company/ignitedhub/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit IgnitED on LinkedIn"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-600 text-[11px] font-semibold text-stone-300 transition hover:border-stone-400 hover:text-white"
+              >
                 Li
-              </span>
+              </a>
             </div>
           </div>
         </div>

@@ -67,6 +67,7 @@ export default async function TeacherDashboardPage() {
           <QuickLink href="/dashboard/teacher/resources" title="Resources" blurb="Publish Drive PDF/video materials." />
           <QuickLink href="/dashboard/teacher/performance" title="Performance" blurb="Monitor students, weak topics, and risks." />
           <QuickLink href="/dashboard/teacher/questions" title="Questions" blurb="Add pre-generated MCQs with validation." />
+          <QuickLink href="/dashboard/teacher/blog" title="Blog" blurb="Write articles and exam tips for students." />
           <QuickLink href="/dashboard/teacher/mock-exams" title="Mock exams" blurb="Create and assign mock papers." />
         </div>
       </div>

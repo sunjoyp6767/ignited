@@ -10,6 +10,7 @@ const NAV = [
   { href: "/dashboard/teacher/resources", label: "Resources" },
   { href: "/dashboard/teacher/performance", label: "Performance" },
   { href: "/dashboard/teacher/questions", label: "Questions" },
+  { href: "/dashboard/teacher/blog", label: "Blog" },
   { href: "/dashboard/teacher/mock-exams", label: "Mock exams" },
 ];
 
